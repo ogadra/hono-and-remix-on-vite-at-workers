@@ -52,14 +52,13 @@ export default defineConfig({
       entry: 'server.ts',
       exclude: [...defaultOptions.exclude, '/assets/**', '/app/**'],
       injectClientScript: false
-    })
-  ]
+    }),
+  ],
+  build: {
+    outDir: 'build',
+  },
 })
 ```
-
-## Demo
-
-https://github.com/honojs/vite-plugins/assets/10682/dfdc5271-c9bf-4831-a0a3-1d4669aeae21
 
 ## Note
 
@@ -67,7 +66,11 @@ This is like a PoC, can still be improved.
 
 ## Author
 
+Forked From https://github.com/yusukebe/hono-and-remix-on-vite
 Yusuke Wada <https://github.com/yusukebe>
+
+Edited by
+ogadra <https://github.com/ogadra>
 
 ## License
 
