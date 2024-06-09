@@ -13,7 +13,6 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
 
 export default function Index() {
   const { myVar } = useLoaderData<typeof loader>()
-  console.log(myVar)
 
   return (
     <div>

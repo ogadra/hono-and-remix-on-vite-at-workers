@@ -56,7 +56,7 @@ app.use(
   },
   async (c, next) => {
     if (process.env.NODE_ENV !== 'development' || import.meta.env.PROD) {
-      // not development
+      // production
       const serverBuild = await import('./build/server')
       return remix({
         build: serverBuild,
