@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
-    "deploy": "wrangler pages deploy",
+    "deploy": "wrangler deploy server.ts",
     "dev": "vite",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    "start": "wrangler pages dev ./build/client",
+    "start": "wrangler dev server.ts",
     "typecheck": "tsc",
     "typegen": "wrangler types"
   },
@@ -22,6 +22,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@cloudflare/kv-asset-handler": "^0.3.2",
     "@cloudflare/workers-types": "^4.20240405.0",
     "@hono/eslint-config": "^0.0.4",
     "@hono/node-server": "^1.11.1",
