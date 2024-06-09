@@ -1,7 +1,19 @@
-# Remix and Hono on Vite
+# Remix and Hono on Vite at Workers
 
 In this project, I'm trying to mount the Remix application on Hono and run it on Vite!
 Hono has a [custom Vite dev server](https://github.com/honojs/vite-plugins/tree/main/packages/dev-server), so if you run your Hono application on it and import the Remix Virtual Module, it should work.
+And you can deploy this project to Cloudflare Workers!!!
+
+## demo to develop
+
+![demo.gif](./demo.gif)
+
+## commands
+
+- `npm run dev` : Setting up a development environment where hot reloading is effective.
+- `npm run start` : Setting up a development environment in `wrangler` command.
+- `npm run build` : Build this project.
+- `npm run deploy` : Deploy this project.
 
 ## Minimal codes
 
