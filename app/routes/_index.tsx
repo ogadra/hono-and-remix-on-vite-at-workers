@@ -3,7 +3,7 @@ import { json } from '@remix-run/cloudflare'
 import { useLoaderData } from '@remix-run/react'
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Remix and Hono on Vite' }]
+  return [{ title: 'Remix and Hono on Vite at Cloudflare Workers' }]
 }
 
 export const loader = async ({ context }: LoaderFunctionArgs) => {
