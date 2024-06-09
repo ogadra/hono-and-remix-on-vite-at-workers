@@ -1,14 +1,15 @@
+import { getAssetFromKV } from '@cloudflare/kv-asset-handler'
 import type { RequestHandler } from '@remix-run/cloudflare'
 import { type AppLoadContext, createRequestHandler } from '@remix-run/cloudflare'
 import { Hono } from 'hono'
-import { serveStatic } from 'hono/cloudflare-workers'
 import { poweredBy } from 'hono/powered-by'
 import { remix } from 'remix-hono/handler'
 import * as build from './build/server'
 
 const app = new Hono<{
   Bindings: {
-    MY_VAR: string
+    MY_VAR: string,
+    __STATIC_CONTENT: KVNamespace,
   }
 }>()
 
@@ -17,14 +18,24 @@ let handler: RequestHandler | undefined
 app.use(poweredBy())
 app.get('/hono', (c) => c.text('Hono, ' + c.env.MY_VAR))
 
-app.use(
-  '/assets/*',
-  async (c, next) => {
+app.on(
+  'GET',
+  ['/assets/*', '/favicon.ico'],
+  async (c) => {
     if (process.env.NODE_ENV !== 'development' || import.meta.env.PROD) {
-      const manifest = import('__STATIC_CONTENT_MANIFEST')
-      return serveStatic({root: './', manifest})(c, next)
+      const manifest = await import('__STATIC_CONTENT_MANIFEST')
+      try {
+        return await getAssetFromKV({
+          request: c.req.raw,
+          waitUntil: c.executionCtx.waitUntil.bind(c.executionCtx)
+        }, {
+          ASSET_NAMESPACE: c.env.__STATIC_CONTENT,
+          ASSET_MANIFEST: JSON.parse(manifest.default),
+        })
+      } catch (e) {
+        return c.notFound()
+      }
     }
-    
   }
 )
 
