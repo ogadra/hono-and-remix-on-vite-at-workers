@@ -41,52 +41,37 @@ app.on(
 
 app.use(
   async (c, next) => {
-    if (process.env.NODE_ENV !== 'development' || import.meta.env.PROD) {
-      // wrangler
-      // production
-      const handleRemixRequest = createRequestHandler(build, 'production')
-      const remixContext = {
-          cloudflare: {
-            env: c.env
-          }
-        } as unknown as AppLoadContext
-      return await handleRemixRequest(c.req.raw, remixContext)
-    }
-    await next()
-  },
-  async (c, next) => {
-    if (process.env.NODE_ENV !== 'development' || import.meta.env.PROD) {
-      // production
-      const serverBuild = await import('./build/server')
-      return remix({
-        build: serverBuild,
-        mode: 'production',
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        getLoadContext(c) {
-          return {
-            cloudflare: {
-              env: c.env
-            }
-          }
-        }
-      })(c, next)
-    } else {
-      // development
-      if (!handler) {
-        // @ts-expect-error it's not typed
-        const build = await import('virtual:remix/server-build')
-        const { createRequestHandler } = await import('@remix-run/cloudflare')
-        handler = createRequestHandler(build, 'development')
-      }
-      const remixContext = {
+    c.env.MY_VAR = 'Hello from Hono'
+    return next()
+  }
+)
+
+app.all('*', async (c) => {
+  if (process.env.NODE_ENV !== 'development' || import.meta.env.PROD) {
+    // wrangler
+    // production
+    const handleRemixRequest = createRequestHandler(build, 'production')
+    const remixContext = {
         cloudflare: {
           env: c.env
         }
       } as unknown as AppLoadContext
-      return handler(c.req.raw, remixContext)
+    return handleRemixRequest(c.req.raw, remixContext)
+  } else {
+    if (!handler) {
+      // @ts-expect-error it's not typed
+      const build = await import('virtual:remix/server-build')
+      const { createRequestHandler } = await import('@remix-run/cloudflare')
+      handler = createRequestHandler(build, 'development')
     }
+  
+    const remixContext = {
+      cloudflare: {
+        env: c.env
+      }
+    } as unknown as AppLoadContext
+    return handler(c.req.raw, remixContext)
   }
-)
+})
 
 export default app
