@@ -3,7 +3,6 @@ import type { RequestHandler } from '@remix-run/cloudflare'
 import { type AppLoadContext, createRequestHandler } from '@remix-run/cloudflare'
 import { Hono } from 'hono'
 import { poweredBy } from 'hono/powered-by'
-import { remix } from 'remix-hono/handler'
 import * as build from './build/server'
 
 const app = new Hono<{
