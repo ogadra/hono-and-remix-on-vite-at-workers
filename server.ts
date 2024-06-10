@@ -46,15 +46,14 @@ app.use(
 )
 
 app.all('*', async (c) => {
+  const remixContext = {
+    cloudflare: { env: c.env }
+  } as unknown as AppLoadContext
+
   if (process.env.NODE_ENV !== 'development' || import.meta.env.PROD) {
     // wrangler
     // production
     const handleRemixRequest = createRequestHandler(build, 'production')
-    const remixContext = {
-        cloudflare: {
-          env: c.env
-        }
-      } as unknown as AppLoadContext
     return handleRemixRequest(c.req.raw, remixContext)
   } else {
     if (!handler) {
@@ -63,12 +62,6 @@ app.all('*', async (c) => {
       const { createRequestHandler } = await import('@remix-run/cloudflare')
       handler = createRequestHandler(build, 'development')
     }
-  
-    const remixContext = {
-      cloudflare: {
-        env: c.env
-      }
-    } as unknown as AppLoadContext
     return handler(c.req.raw, remixContext)
   }
 })
